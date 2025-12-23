@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace Touchgrass
 {
-    internal class PomodoroTimer
+    public class PomodoroTimer
     {
+        public int WorkDuration { get; set; } = 25 * 60;
+        public int BreakDuration { get; set; } = 5 * 60;
+        public int CurrentCycle { get; set; } = 0;
     }
 }
