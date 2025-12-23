@@ -38,6 +38,11 @@ namespace Touchgrass
                         case "--cycles":
                             timer.Cycles = value;
                             break;
+                        case "--testing":
+                            timer.Cycles = 1;
+                            timer.BreakDuration = value;
+                            timer.WorkDuration = value;
+                            break;
                         default:
                             AnsiConsole.MarkupLine($"[red]Unknown option: {option}[/]");
                             return;
@@ -63,15 +68,31 @@ namespace Touchgrass
 
             while (true)
             {
-                if (timer.CurrentCycle == timer.Cycles)
+                if (timer.CurrentCycle > timer.Cycles)
                 {
                     AnsiConsole.MarkupLine("\n[bold green]All cycles complete![/]");
-                    AnsiConsole.MarkupLine("[italic darkgreen]Hope you got some s*** done. See you next time![/]");
-                    if (AnsiConsole.Confirm("Exit?")) return;
+                    AnsiConsole.MarkupLine("[italic purple]Hope you got some s*** done. See you next time![/]");
+
+                    var prompt = new SelectionPrompt<string>()
+                        .Title("What next?")
+                        .AddChoices("Exit", "Restart");
+
+                    // deal w/ prompt
+                    var choice = AnsiConsole.Prompt(prompt);
+
+                    if (choice == "Exit") return;
+                    if (choice == "Restart")
+                    {
+                        timer.CurrentCycle = 0;
+                        timer.StartWork();
+                        continue;
+                    }
+                    
                 }
                 var phase = timer.IsWorking ? "Work" : "Break";
                 AnsiConsole.Status()
-                    .Spinner(Spinner.Known.TimeTravel)
+                    .Spinner(Spinner.Known.Star)
+                    .SpinnerStyle(Style.Parse("green bold"))
                     .Start($"{phase} session starting...", context =>
                     {
                         DetermineTimerPhase(timer);
@@ -86,7 +107,7 @@ namespace Touchgrass
                     });
 
                 AnsiConsole.MarkupLine($"[bold]{phase} phase {timer.CurrentCycle} complete![/]");
-                AnsiConsole.MarkupLine("[italic darkgreen]Go touch some grass.[/]");
+                AnsiConsole.MarkupLine("[italic green]Go touch some grass.[/]");
                 timer.SwitchPhase();
                 if (!AnsiConsole.Confirm("Continue to next phase?")) break;
             }
