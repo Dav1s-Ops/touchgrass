@@ -1,7 +1,8 @@
 {
   "profiles": {
     "touchgrass": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "commandLineArgs": "--testing 1"
     },
     "Container (Dockerfile)": {
       "commandName": "Docker"
