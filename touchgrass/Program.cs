@@ -51,8 +51,8 @@ namespace Touchgrass
             }
 
             var panel = new Panel($"""
-                [italic yellow]Cycles: [/][slowblink]{timer.Cycles}[/] 
-                [italic yellow]Work:   [/][slowblink]{timer.WorkDuration.ToMinSecString()}[/] 
+                [italic yellow]Cycles: [/][slowblink]{timer.Cycles}[/]
+                [italic yellow]Work:   [/][slowblink]{timer.WorkDuration.ToMinSecString()}[/]
                 [italic yellow]Break:  [/][slowblink]{timer.BreakDuration.ToMinSecString()}[/]
                 """);
             panel.Header = new PanelHeader("Params");
@@ -70,7 +70,7 @@ namespace Touchgrass
             {
                 if (timer.CurrentCycle > timer.Cycles)
                 {
-                    AnsiConsole.MarkupLine("\n[bold green]All cycles complete![/]");
+                    AnsiConsole.MarkupLine("[bold green]All cycles complete![/]");
                     AnsiConsole.MarkupLine("[italic purple]Hope you got some s*** done. See you next time![/]");
 
                     var prompt = new SelectionPrompt<string>()
@@ -83,11 +83,11 @@ namespace Touchgrass
                     if (choice == "Exit") return;
                     if (choice == "Restart")
                     {
-                        timer.CurrentCycle = 0;
+                        timer.CurrentCycle = 1;
                         timer.StartWork();
                         continue;
                     }
-                    
+
                 }
                 var phase = timer.IsWorking ? "Work" : "Break";
                 AnsiConsole.Status()
