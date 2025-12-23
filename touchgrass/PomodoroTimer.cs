@@ -33,6 +33,10 @@ namespace Touchgrass
                 CurrentCycle++;
                 StartBreak();
             }
+            else
+            {
+                StartWork();
+            }
         }
 
         public void StartBreak()
