@@ -33,4 +33,15 @@ public class PomodoroTimerTests
         Assert.False(timer.IsWorking);
         Assert.Equal(5 * 60, timer.RemainingTime);
     }
+
+    [Fact]
+    public void Timer_SwitchesFromBreakToWork()
+    {
+        var timer = new PomodoroTimer();
+        timer.StartBreak();
+        timer.SwitchPhase();
+        Assert.True(timer.IsWorking);
+        Assert.Equal(25 * 60, timer.RemainingTime);
+    }
+
 }
