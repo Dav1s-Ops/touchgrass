@@ -45,11 +45,14 @@ namespace Touchgrass
                 }
             }
 
-            AnsiConsole.MarkupLineInterpolated($"""
+            var panel = new Panel($"""
                 [italic yellow]Cycles: [/][slowblink]{timer.Cycles}[/] 
                 [italic yellow]Work:   [/][slowblink]{timer.WorkDuration.ToMinSecString()}[/] 
                 [italic yellow]Break:  [/][slowblink]{timer.BreakDuration.ToMinSecString()}[/]
                 """);
+            panel.Header = new PanelHeader("Params");
+            panel.Border = BoxBorder.Ascii;
+            AnsiConsole.Write(panel);
 
             RunTimer(timer);
         }
@@ -62,13 +65,13 @@ namespace Touchgrass
             {
                 if (timer.CurrentCycle == timer.Cycles)
                 {
-                    AnsiConsole.MarkupLine("\n[bold green]All cycles complete![/] :chequered_flag:");
+                    AnsiConsole.MarkupLine("\n[bold green]All cycles complete![/]");
                     AnsiConsole.MarkupLine("[italic darkgreen]Hope you got some s*** done. See you next time![/]");
                     if (AnsiConsole.Confirm("Exit?")) return;
                 }
                 var phase = timer.IsWorking ? "Work" : "Break";
                 AnsiConsole.Status()
-                    .Spinner(Spinner.Known.FingerDance)
+                    .Spinner(Spinner.Known.TimeTravel)
                     .Start($"{phase} session starting...", context =>
                     {
                         DetermineTimerPhase(timer);
