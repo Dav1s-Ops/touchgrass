@@ -5,6 +5,8 @@ VisualStudioVersion = 17.14.36705.20 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "touchgrass", "touchgrass\touchgrass.csproj", "{C8315B0B-053E-4EFE-B3E2-445FEEB3D89B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "touchgrass.tests", "touchgrass.tests\touchgrass.tests.csproj", "{238727C4-4539-4AC7-8F2C-B4680704EEB1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{C8315B0B-053E-4EFE-B3E2-445FEEB3D89B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C8315B0B-053E-4EFE-B3E2-445FEEB3D89B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C8315B0B-053E-4EFE-B3E2-445FEEB3D89B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{238727C4-4539-4AC7-8F2C-B4680704EEB1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{238727C4-4539-4AC7-8F2C-B4680704EEB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{238727C4-4539-4AC7-8F2C-B4680704EEB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{238727C4-4539-4AC7-8F2C-B4680704EEB1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
