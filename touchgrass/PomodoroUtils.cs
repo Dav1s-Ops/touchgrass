@@ -8,17 +8,10 @@ namespace Touchgrass
 {
     public static class TimeExtensions
     {
-        public static string ToMinSecString(this int seconds, bool showHours = true, string separator = ":")
+        public static string ToMinSecString(this int seconds)
         {
-            var time = TimeSpan.FromSeconds(seconds);
-            var hours = (int)time.TotalHours;
-
-            if (showHours && hours > 0)
-            {
-                return $"{hours}h {time:mm\\:ss}";
-            }
-
-            return $"{time:mm\\:ss}";
+            var ts = TimeSpan.FromSeconds(seconds);
+            return $"{ts.Minutes:D2}:{ts.Seconds:D2}";
         }
     }
 }
