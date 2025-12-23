@@ -9,8 +9,8 @@ namespace Touchgrass
     public class PomodoroTimer
     {
         public int Cycles { get; set; } = 4;
-        public int WorkDuration { get; set; } = 25 * 1;
-        public int BreakDuration { get; set; } = 5 * 1;
+        public int WorkDuration { get; set; } = 25 * 60;
+        public int BreakDuration { get; set; } = 5 * 60;
         public int CurrentCycle { get; set; } = 0;
         public int RemainingTime { get; private set; }
         public bool IsWorking { get; private set; }
