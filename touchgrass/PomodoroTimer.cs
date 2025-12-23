@@ -25,5 +25,20 @@ namespace Touchgrass
             if (RemainingTime > 0)
                 RemainingTime--;
         }
+
+        public void SwitchPhase()
+        {
+            if (IsWorking)
+            {
+                CurrentCycle++;
+                StartBreak();
+            }
+        }
+
+        public void StartBreak()
+        {
+            RemainingTime = (CurrentCycle % 4 == 0) ? 15 * 60 : BreakDuration;
+            IsWorking = false;
+        }
     }
 }
