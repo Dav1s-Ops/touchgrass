@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "touchgrass": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}
