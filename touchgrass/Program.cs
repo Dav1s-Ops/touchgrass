@@ -6,7 +6,7 @@ namespace Touchgrass
     {
         static void Main(string[] args)
         {
-            AnsiConsole.Markup("[bold green]Welcome to Touchgrass Pomodoro Timer![/]\n");
+            AnsiConsole.MarkupLine("[bold green]Touchgrass Pomodoro Timer[/]");
             var timer = new PomodoroTimer();
 
             // parse args for custom durations e.g. tgrass --work 30 --break 10
@@ -14,6 +14,12 @@ namespace Touchgrass
             {
                 //TODO: Parse em!
             }
+
+            AnsiConsole.MarkupLineInterpolated($"""
+                [italic yellow]Cycles: [/][slowblink]{timer.Cycles}[/] 
+                [italic yellow]Work:   [/][slowblink]{timer.WorkDuration.ToMinSecString()}[/] 
+                [italic yellow]Break:  [/][slowblink]{timer.BreakDuration.ToMinSecString()}[/]
+                """);
 
             RunTimer(timer);
         }
