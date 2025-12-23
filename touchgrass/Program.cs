@@ -12,7 +12,37 @@ namespace Touchgrass
             // parse args for custom durations e.g. tgrass --work 30 --break 10
             if (args.Length > 0)
             {
-                //TODO: Parse em!
+                for (int i = 0; i < args.Length; i += 2)
+                {
+                    if (i + 1 >= args.Length)
+                    {
+                        AnsiConsole.MarkupLine("[red]Invalid arguments: Missing value for option.[/]");
+                        return;
+                    }
+
+                    string option = args[i].ToLower();
+                    if (!int.TryParse(args[i + 1], out int value) || value <= 0)
+                    {
+                        AnsiConsole.MarkupLine("[red]Invalid arguments: Value must be a positive integer.[/]");
+                        return;
+                    }
+
+                    switch (option)
+                    {
+                        case "--work":
+                            timer.WorkDuration = value * 60;
+                            break;
+                        case "--break":
+                            timer.BreakDuration = value * 60;
+                            break;
+                        case "--cycles":
+                            timer.Cycles = value;
+                            break;
+                        default:
+                            AnsiConsole.MarkupLine($"[red]Unknown option: {option}[/]");
+                            return;
+                    }
+                }
             }
 
             AnsiConsole.MarkupLineInterpolated($"""
@@ -30,6 +60,12 @@ namespace Touchgrass
 
             while (true)
             {
+                if (timer.CurrentCycle == timer.Cycles)
+                {
+                    AnsiConsole.MarkupLine("\n[bold green]All cycles complete![/] :chequered_flag:");
+                    AnsiConsole.MarkupLine("[italic darkgreen]Hope you got some s*** done. See you next time![/]");
+                    if (AnsiConsole.Confirm("Exit?")) return;
+                }
                 var phase = timer.IsWorking ? "Work" : "Break";
                 AnsiConsole.Status()
                     .Spinner(Spinner.Known.FingerDance)
@@ -46,7 +82,8 @@ namespace Touchgrass
                         }
                     });
 
-                AnsiConsole.Markup($"[bold]{phase} complete![/]\n");
+                AnsiConsole.MarkupLine($"[bold]{phase} phase {timer.CurrentCycle} complete![/]");
+                AnsiConsole.MarkupLine("[italic darkgreen]Go touch some grass.[/]");
                 timer.SwitchPhase();
                 if (!AnsiConsole.Confirm("Continue to next phase?")) break;
             }
