@@ -80,6 +80,7 @@ namespace Touchgrass
                 if (timer.CurrentCycle > timer.Cycles)
                 {
                     AnsiConsole.MarkupLine("[bold green]All cycles complete![/]");
+                    AnsiConsole.MarkupLine($"[italic yellow]Works: [/]{completedWorks} | [italic yellow]Breaks: [/]{completedBreaks}");
                     AnsiConsole.MarkupLine("[italic purple]Hope you got some s*** done. See you next time![/]");
 
                     var prompt = new SelectionPrompt<string>()
@@ -91,6 +92,9 @@ namespace Touchgrass
                     if (choice == "Exit") return;
                     if (choice == "Restart")
                     {
+                        WriteControl("\u001b[1A\u001b[2K"); // Clear confirm line
+                        WriteControl("\u001b[1A\u001b[2K"); // Clear grass line
+                        WriteControl("\u001b[1A\u001b[2K"); // Clear complete line, now cursor at tracking position
                         timer.CurrentCycle = 1;
                         completedWorks = 0;
                         completedBreaks = 0;
@@ -101,7 +105,7 @@ namespace Touchgrass
 
                 var phase = timer.IsWorking ? "Work" : "Break";
 
-                AnsiConsole.MarkupLine($"Cycle: {timer.CurrentCycle} | Works: {completedWorks} | Breaks: {completedBreaks}");
+                AnsiConsole.MarkupLine($"[italic yellow]Cycle: [/]{timer.CurrentCycle} | [italic yellow]Works: [/]{completedWorks} | [italic yellow]Breaks: [/]{completedBreaks}");
 
                 AnsiConsole.Status()
                     .Spinner(Spinner.Known.Star)
@@ -128,8 +132,8 @@ namespace Touchgrass
                     completedBreaks++;
                 }
 
-                WriteControl("\u001b[2K");
-                AnsiConsole.MarkupLine($"Cycle: {timer.CurrentCycle} | Works: {completedWorks} | Breaks: {completedBreaks} | {phase} phase complete!");
+                WriteControl("\u001b[1A\u001b[2K");
+                AnsiConsole.MarkupLine($"[italic yellow]Cycle: [/]{timer.CurrentCycle} | [italic yellow]Works: [/]{completedWorks} | [italic yellow]Breaks: [/]{completedBreaks} | [italic purple]{phase} phase complete![/]");
 
                 WriteControl("\u001b[2K");
                 AnsiConsole.MarkupLine("[italic green]Go touch some grass.[/]");
