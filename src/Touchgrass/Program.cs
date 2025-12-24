@@ -1,4 +1,5 @@
-﻿using Spectre.Console;
+﻿using Touchgrass.Interfaces;
+using Touchgrass.Services;
 
 namespace Touchgrass
 {
@@ -6,164 +7,63 @@ namespace Touchgrass
     {
         static void Main(string[] args)
         {
-            AnsiConsole.MarkupLine("[bold green]Touchgrass Pomodoro Timer[/]");
-            var timer = new PomodoroTimer();
+            var parser = new CommandLineParser();
+            var ui = new SpectreConsoleUI();
 
-            // parse args for custom durations e.g. tgrass --work 30 --break 10
-            if (args.Length > 0)
+            ui.DisplayWelcome();
+
+            IPomodoroConfig config;
+            try
             {
-                for (int i = 0; i < args.Length; i += 2)
-                {
-                    if (i + 1 >= args.Length)
-                    {
-                        AnsiConsole.MarkupLine("[red]Invalid arguments: Missing value for option.[/]");
-                        return;
-                    }
-
-                    string option = args[i].ToLower();
-                    if (!int.TryParse(args[i + 1], out int value) || value <= 0)
-                    {
-                        AnsiConsole.MarkupLine("[red]Invalid arguments: Value must be a positive integer.[/]");
-                        return;
-                    }
-
-                    switch (option)
-                    {
-                        case "--work":
-                            timer.WorkDuration = value * 60;
-                            break;
-                        case "--break":
-                            timer.BreakDuration = value * 60;
-                            break;
-                        case "--cycles":
-                            timer.Cycles = value;
-                            break;
-                        case "--testing":
-                            timer.Cycles = 1;
-                            timer.BreakDuration = value;
-                            timer.WorkDuration = value;
-                            break;
-                        default:
-                            AnsiConsole.MarkupLine($"[red]Unknown option: {option}[/]");
-                            return;
-                    }
-                }
+                config = parser.Parse(args);
+            }
+            catch (ArgumentException ex)
+            {
+                ui.DisplayError(ex.Message);
+                return;
             }
 
-            var panel = new Panel($"""
-                    [italic yellow]Cycles: [/][slowblink]{timer.Cycles}[/]
-                    [italic yellow]Work:   [/][slowblink]{timer.WorkDuration.ToMinSecString()}[/]
-                    [italic yellow]Break:  [/][slowblink]{timer.BreakDuration.ToMinSecString()}[/]
-                    """)
-            {
-                Header = new PanelHeader("Params"),
-                Border = BoxBorder.Ascii,
-            };
-            AnsiConsole.Write(panel);
+            ui.DisplayConfig(config);
 
-            RunTimer(timer);
+            var timer = new PomodoroTimer(config);
+
+            RunTimer(timer, ui, config);
         }
 
-        private static void WriteControl(string code)
+        private static void RunTimer(IPomodoroTimer timer, IConsoleUI ui, IPomodoroConfig config)
         {
-            AnsiConsole.Write(new Text(code));
-        }
-
-        static void RunTimer(PomodoroTimer timer)
-        {
-            int completedWorks = 0;
-            int completedBreaks = 0;
             timer.StartWork();
 
             while (true)
             {
-                if (timer.CurrentCycle > timer.Cycles)
+                if (timer.CurrentCycle > config.Cycles)
                 {
-                    AnsiConsole.MarkupLine("[bold green]All cycles complete![/]");
-                    AnsiConsole.MarkupLine($"[italic yellow]Works: [/]{completedWorks} | [italic yellow]Breaks: [/]{completedBreaks}");
-                    AnsiConsole.MarkupLine("[italic purple]Hope you got some s*** done. See you next time![/]");
-
-                    var prompt = new SelectionPrompt<string>()
-                        .Title("What next?")
-                        .AddChoices("Exit", "Restart");
-
-                    var choice = AnsiConsole.Prompt(prompt);
+                    ui.DisplayAllCyclesComplete();
+                    var choice = ui.PromptRestartOrExit();
 
                     if (choice == "Exit") return;
                     if (choice == "Restart")
                     {
-                        WriteControl("\u001b[1A\u001b[2K"); // Clear confirm line
-                        WriteControl("\u001b[1A\u001b[2K"); // Clear grass line
-                        WriteControl("\u001b[1A\u001b[2K"); // Clear complete line, now cursor at tracking position
-                        timer.CurrentCycle = 1;
-                        completedWorks = 0;
-                        completedBreaks = 0;
+                        timer = new PomodoroTimer(config); // Reset
                         timer.StartWork();
                         continue;
                     }
                 }
 
                 var phase = timer.IsWorking ? "Work" : "Break";
-
-                AnsiConsole.MarkupLine($"[italic yellow]Cycle: [/]{timer.CurrentCycle} | [italic yellow]Works: [/]{completedWorks} | [italic yellow]Breaks: [/]{completedBreaks}");
-
-                AnsiConsole.Status()
-                    .Spinner(Spinner.Known.Star)
-                    .SpinnerStyle(Style.Parse("green bold"))
-                    .Start($"{phase} session starting...", context =>
+                ui.RunStatusSpinner(() =>
+                {
+                    while (timer.RemainingTime > 0)
                     {
-                        DetermineTimerPhase(timer);
+                        Thread.Sleep(1000);
+                        timer.Tick();
+                    }
+                }, $"{phase} session starting...");
 
-                        while (timer.RemainingTime > 0)
-                        {
-                            Thread.Sleep(1000);
-                            timer.Tick();
-                            context.Status($"[yellow]{phase}: {TimeSpan.FromSeconds(timer.RemainingTime):mm\\:ss}[/]");
-                            context.Refresh();
-                        }
-                    });
-
-                if (timer.IsWorking)
-                {
-                    completedWorks++;
-                }
-                else
-                {
-                    completedBreaks++;
-                }
-
-                WriteControl("\u001b[1A\u001b[2K");
-                AnsiConsole.MarkupLine($"[italic yellow]Cycle: [/]{timer.CurrentCycle} | [italic yellow]Works: [/]{completedWorks} | [italic yellow]Breaks: [/]{completedBreaks} | [italic purple]{phase} phase complete![/]");
-
-                WriteControl("\u001b[2K");
-                AnsiConsole.MarkupLine("[italic green]Go touch some grass.[/]");
-
+                // Update status inside a separate loop for clarity, but since spinner wraps it, we handle ticks inside
+                ui.DisplayPhaseComplete(phase, timer.CurrentCycle);
                 timer.SwitchPhase();
-
-                bool continueNext = AnsiConsole.Confirm("Continue to next phase?");
-
-                if (!continueNext)
-                {
-                    break;
-                }
-
-                // Clean up after confirm
-                WriteControl("\u001b[1A\u001b[2K"); // Clear confirm line
-                WriteControl("\u001b[1A\u001b[2K"); // Clear grass line
-                WriteControl("\u001b[1A\u001b[2K"); // Clear complete line, now cursor at tracking position
-                                                    // Ready for next tracking print in loop
-            }
-        }
-
-        public static void DetermineTimerPhase(PomodoroTimer timer)
-        {
-            if (timer.IsWorking)
-            {
-                timer.StartWork();
-            }
-            else
-            {
-                timer.StartBreak();
+                if (!ui.ConfirmContinue()) break;
             }
         }
     }
