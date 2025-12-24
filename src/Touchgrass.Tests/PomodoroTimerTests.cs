@@ -1,20 +1,24 @@
-﻿namespace Touchgrass.Tests;
+﻿using Touchgrass.Services;
+
+namespace Touchgrass.Tests;
 
 public class PomodoroTimerTests
 {
     [Fact]
     public void Timer_InitWithDefaultDurations()
     {
-        var timer = new PomodoroTimer();
-        Assert.Equal(25 * 60, timer.WorkDuration);
-        Assert.Equal(5 * 60, timer.BreakDuration);
+        var config = new PomodoroConfig();
+        var timer = new PomodoroTimer(config);
+        Assert.Equal(25 * 60, config.WorkDurationSeconds);
+        Assert.Equal(5 * 60, config.BreakDurationSeconds);
         Assert.Equal(1, timer.CurrentCycle);
     }
 
     [Fact]
     public void Timer_CountsDownWorkPeriod()
     {
-        var timer = new PomodoroTimer();
+        var config = new PomodoroConfig();
+        var timer = new PomodoroTimer(config);
         timer.StartWork();
         timer.Tick();
         Assert.Equal(25 * 60 - 1, timer.RemainingTime);
@@ -24,7 +28,8 @@ public class PomodoroTimerTests
     [Fact]
     public void Timer_AdvanceCycleAndSwitchesToBreak()
     {
-        var timer = new PomodoroTimer();
+        var config = new PomodoroConfig();
+        var timer = new PomodoroTimer(config);
         timer.StartWork();
         while (timer.RemainingTime > 0)
             timer.Tick();
@@ -37,7 +42,8 @@ public class PomodoroTimerTests
     [Fact]
     public void Timer_SwitchesFromBreakToWork()
     {
-        var timer = new PomodoroTimer();
+        var config = new PomodoroConfig();
+        var timer = new PomodoroTimer(config);
         timer.StartBreak();
         timer.SwitchPhase();
         Assert.True(timer.IsWorking);
