@@ -10,17 +10,20 @@ namespace Touchgrass.Services
         public int CurrentCycle { get; private set; } = 1;
         public int RemainingTime { get; private set; }
         public bool IsWorking { get; private set; }
+        public string Phase { get; private set; } = "Work";
 
         public void StartWork()
         {
             RemainingTime = _config.WorkDurationSeconds;
             IsWorking = true;
+            Phase = "Work";
         }
 
         public void StartBreak()
         {
             RemainingTime = _config.BreakDurationSeconds;
             IsWorking = false;
+            Phase = "Break";
         }
 
         public void Tick()
@@ -29,7 +32,7 @@ namespace Touchgrass.Services
                 RemainingTime--;
         }
 
-        public void DeterminePhase()
+        public void StartPhase()
         {
             if (IsWorking)
             {
