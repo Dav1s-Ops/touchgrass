@@ -1,15 +1,22 @@
-﻿namespace Touchgrass.Interfaces
+﻿using Spectre.Console;
+
+namespace Touchgrass.Interfaces
 {
     public interface IConsoleUI
     {
         void DisplayWelcome();
         void DisplayConfig(IPomodoroConfig config);
-        void DisplayStatus(string phase, TimeSpan remaining);
-        void DisplayPhaseComplete(string phase, int cycle);
+        void DisplayCycleTracking(int currentCycle, int completedWorks, int completedBreaks);
+        void DisplayCycleComplete(int currentCycle, int completedWorks, int completedBreaks, string phase);
+        void DisplayGrassMessage();
         void DisplayAllCyclesComplete();
+        void DisplayCompletedStats(int completedWorks, int completedBreaks);
+        void DisplayFinishedMessage();
         void DisplayError(string message);
         bool ConfirmContinue();
         string PromptRestartOrExit();
-        void RunStatusSpinner(Action spinnerAction, string startMessage);
+        void ClearOneLine();
+        void ClearCurrentLine();
+        void ClearLines(int num);
     }
 }

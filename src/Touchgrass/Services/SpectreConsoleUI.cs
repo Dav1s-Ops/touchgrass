@@ -17,26 +17,41 @@ namespace Touchgrass.Services
             [italic yellow]Cycles: [/][slowblink]{config.Cycles}[/]
             [italic yellow]Work:   [/][slowblink]{config.WorkDurationSeconds.ToMinSecString()}[/]
             [italic yellow]Break:  [/][slowblink]{config.BreakDurationSeconds.ToMinSecString()}[/]
-            """);
-            panel.Header = new PanelHeader("Params");
-            panel.Border = BoxBorder.Ascii;
+            """)
+            {
+                Header = new PanelHeader("Params"),
+                Border = BoxBorder.Ascii,
+            };
             AnsiConsole.Write(panel);
         }
 
-        public void DisplayStatus(string phase, TimeSpan remaining)
+        public void DisplayCycleTracking(int currentCycle, int completedWorks, int completedBreaks)
         {
-            // Used in spinner context
+            AnsiConsole.MarkupLine($"[italic yellow]Cycle: [/]{currentCycle} | [italic yellow]Works: [/]{completedWorks} | [italic yellow]Breaks: [/]{completedBreaks}");
         }
 
-        public void DisplayPhaseComplete(string phase, int cycle)
+        public void DisplayCycleComplete(int currentCycle, int completedWorks, int completedBreaks, string phase)
         {
-            AnsiConsole.MarkupLine($"[bold]{phase} phase {cycle} complete![/]");
+            AnsiConsole.MarkupLine($"[italic yellow]Cycle: [/]{currentCycle} | [italic yellow]Works: [/]{completedWorks} | [italic yellow]Breaks: [/]{completedBreaks} | [italic purple]{phase} phase complete![/]");
+        }
+
+        public void DisplayGrassMessage()
+        {
             AnsiConsole.MarkupLine("[italic green]Go touch some grass.[/]");
         }
 
         public void DisplayAllCyclesComplete()
         {
             AnsiConsole.MarkupLine("[bold green]All cycles complete![/]");
+        }
+
+        public void DisplayCompletedStats(int completedWorks, int completedBreaks)
+        {
+            AnsiConsole.MarkupLine($"[italic yellow]Works: [/]{completedWorks} | [italic yellow]Breaks: [/]{completedBreaks}");
+        }
+
+        public void DisplayFinishedMessage()
+        {
             AnsiConsole.MarkupLine("[italic purple]Hope you got some s*** done. See you next time![/]");
         }
 
@@ -58,15 +73,27 @@ namespace Touchgrass.Services
             return AnsiConsole.Prompt(prompt);
         }
 
-        public void RunStatusSpinner(Action spinnerAction, string startMessage)
+        public void WriteAnsiControl(string code)
         {
-            AnsiConsole.Status()
-                .Spinner(Spinner.Known.Star)
-                .SpinnerStyle(Style.Parse("green bold"))
-                .Start(startMessage, context =>
-                {
-                    spinnerAction();
-                });
+            AnsiConsole.Write(new Text(code));
+        }
+
+        public void ClearOneLine()
+        {
+            WriteAnsiControl("\u001b[1A\u001b[2K");
+        }
+
+        public void ClearCurrentLine()
+        {
+            WriteAnsiControl("\u001b[2K");
+        }
+
+        public void ClearLines(int count)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                ClearOneLine();
+            }
         }
     }
 }
