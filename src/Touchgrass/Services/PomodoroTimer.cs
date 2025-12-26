@@ -6,6 +6,7 @@ namespace Touchgrass.Services
     {
         private readonly IPomodoroConfig _config = config;
 
+        public int Cycles => _config.Cycles;
         public int CurrentCycle { get; private set; } = 1;
         public int RemainingTime { get; private set; }
         public bool IsWorking { get; private set; }
