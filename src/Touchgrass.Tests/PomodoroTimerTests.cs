@@ -1,4 +1,5 @@
-﻿using Touchgrass.Services;
+﻿using Touchgrass.Interfaces;
+using Touchgrass.Services;
 
 namespace Touchgrass.Tests;
 
@@ -50,4 +51,52 @@ public class PomodoroTimerTests
         Assert.Equal(25 * 60, timer.RemainingTime);
     }
 
+    [Fact]
+    public void StartPhase_ResetsToFullWorkDuration_WhenIsWorkingTrue()
+    {
+        IPomodoroConfig config = new PomodoroConfig();
+        IPomodoroTimer timer = new PomodoroTimer(config);
+
+        timer.StartWork();
+        Assert.Equal(25 * 60, timer.RemainingTime);
+        Assert.True(timer.IsWorking);
+        Assert.Equal("Work", timer.Phase);
+
+        // Simulate partial countdown
+        timer.Tick();
+        Assert.Equal(25 * 60 - 1, timer.RemainingTime);
+
+        // Act: Reset to current phase
+        timer.StartPhase();
+
+        // Assert: Resets to full work duration, preserves phase
+        Assert.Equal(25 * 60, timer.RemainingTime);
+        Assert.True(timer.IsWorking);
+        Assert.Equal("Work", timer.Phase);
+    }
+
+    [Fact]
+    public void StartPhase_ResetsToFullBreakDuration_WhenIsWorkingFalse()
+    {
+        IPomodoroConfig config = new PomodoroConfig();
+        IPomodoroTimer timer = new PomodoroTimer(config);
+
+        timer.StartWork();
+        timer.SwitchPhase(); // Switch to break phase
+        Assert.Equal(5 * 60, timer.RemainingTime);
+        Assert.False(timer.IsWorking);
+        Assert.Equal("Break", timer.Phase);
+
+        // Simulate partial countdown
+        timer.Tick();
+        Assert.Equal(5 * 60 - 1, timer.RemainingTime);
+
+        // Act: Reset to current phase
+        timer.StartPhase();
+
+        // Assert: Resets to full break duration, preserves phase
+        Assert.Equal(5 * 60, timer.RemainingTime);
+        Assert.False(timer.IsWorking);
+        Assert.Equal("Break", timer.Phase);
+    }
 }
