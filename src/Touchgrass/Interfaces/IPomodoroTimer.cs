@@ -8,6 +8,7 @@
         void StartWork();
         void StartBreak();
         void Tick();
+        void DeterminePhase();
         void SwitchPhase();
     }
 }
