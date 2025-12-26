@@ -61,22 +61,20 @@ namespace Touchgrass
                     }
                 }
 
-                var phase = timer.IsWorking ? "Work" : "Break";
-
                 ui.DisplayCycleTracking(timer.CurrentCycle, stats);
 
                 AnsiConsole.Status()
                     .Spinner(Spinner.Known.TimeTravel)
                     .SpinnerStyle(Style.Parse("green bold"))
-                    .Start($"{phase} session starting...", context =>
+                    .Start($"{timer.Phase} session starting...", context =>
                     {
-                        timer.DeterminePhase();
+                        timer.StartPhase();
 
                         while (timer.RemainingTime > 0)
                         {
                             Thread.Sleep(1000);
                             timer.Tick();
-                            context.Status = $"[yellow]{phase}: {TimeSpan.FromSeconds(timer.RemainingTime):mm\\:ss}[/]";
+                            context.Status = $"[yellow]{timer.Phase}: {TimeSpan.FromSeconds(timer.RemainingTime):mm\\:ss}[/]";
                             context.Refresh();
                         }
                     });
@@ -84,7 +82,7 @@ namespace Touchgrass
                 stats.UpdateCompletedStats(timer);
 
                 ui.ClearOneLine();
-                ui.DisplayCycleComplete(timer.CurrentCycle, stats, phase);
+                ui.DisplayCycleComplete(timer.CurrentCycle, stats, timer.Phase);
 
                 ui.ClearCurrentLine();
                 ui.DisplayGrassMessage();
