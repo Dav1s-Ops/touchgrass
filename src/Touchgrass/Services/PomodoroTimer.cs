@@ -29,6 +29,18 @@ namespace Touchgrass.Services
                 RemainingTime--;
         }
 
+        public void DeterminePhase()
+        {
+            if (IsWorking)
+            {
+                StartWork();
+            }
+            else
+            {
+                StartBreak();
+            }
+        }
+
         public void SwitchPhase()
         {
             if (IsWorking)
