@@ -1,4 +1,5 @@
-﻿using Touchgrass.Interfaces;
+﻿using Spectre.Console;
+using Touchgrass.Interfaces;
 using Touchgrass.Services;
 
 namespace Touchgrass
@@ -30,8 +31,13 @@ namespace Touchgrass
             RunTimer(timer, ui, config);
         }
 
-        private static void RunTimer(IPomodoroTimer timer, IConsoleUI ui, IPomodoroConfig config)
+        private static void RunTimer(
+            PomodoroTimer timer, 
+            SpectreConsoleUI ui, 
+            IPomodoroConfig config
+        )
         {
+            var stats = new CompletedStats();
             timer.StartWork();
 
             while (true)
@@ -39,31 +45,57 @@ namespace Touchgrass
                 if (timer.CurrentCycle > config.Cycles)
                 {
                     ui.DisplayAllCyclesComplete();
+                    ui.DisplayCompletedStats(stats);
+                    ui.DisplayFinishedMessage();
+
                     var choice = ui.PromptRestartOrExit();
 
                     if (choice == "Exit") return;
                     if (choice == "Restart")
                     {
-                        timer = new PomodoroTimer(config); // Reset
+                        ui.ClearLines(3);
+                        timer = new PomodoroTimer(config);
+                        stats = new CompletedStats();
                         timer.StartWork();
                         continue;
                     }
                 }
 
                 var phase = timer.IsWorking ? "Work" : "Break";
-                ui.RunStatusSpinner(() =>
-                {
-                    while (timer.RemainingTime > 0)
-                    {
-                        Thread.Sleep(1000);
-                        timer.Tick();
-                    }
-                }, $"{phase} session starting...");
 
-                // Update status inside a separate loop for clarity, but since spinner wraps it, we handle ticks inside
-                ui.DisplayPhaseComplete(phase, timer.CurrentCycle);
+                ui.DisplayCycleTracking(timer.CurrentCycle, stats);
+
+                AnsiConsole.Status()
+                    .Spinner(Spinner.Known.TimeTravel)
+                    .SpinnerStyle(Style.Parse("green bold"))
+                    .Start($"{phase} session starting...", context =>
+                    {
+                        timer.DeterminePhase();
+
+                        while (timer.RemainingTime > 0)
+                        {
+                            Thread.Sleep(1000);
+                            timer.Tick();
+                            context.Status = $"[yellow]{phase}: {TimeSpan.FromSeconds(timer.RemainingTime):mm\\:ss}[/]";
+                            context.Refresh();
+                        }
+                    });
+
+                stats.UpdateCompletedStats(timer);
+
+                ui.ClearOneLine();
+                ui.DisplayCycleComplete(timer.CurrentCycle, stats, phase);
+
+                ui.ClearCurrentLine();
+                ui.DisplayGrassMessage();
+
                 timer.SwitchPhase();
-                if (!ui.ConfirmContinue()) break;
+
+                bool continueNext = ui.ConfirmContinue();
+
+                if (!continueNext) break;
+
+                ui.ClearLines(3);
             }
         }
     }

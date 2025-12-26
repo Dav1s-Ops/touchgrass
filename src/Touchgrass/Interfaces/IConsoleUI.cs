@@ -1,4 +1,4 @@
-﻿using Spectre.Console;
+﻿using Touchgrass.Services;
 
 namespace Touchgrass.Interfaces
 {
@@ -6,11 +6,11 @@ namespace Touchgrass.Interfaces
     {
         void DisplayWelcome();
         void DisplayConfig(IPomodoroConfig config);
-        void DisplayCycleTracking(int currentCycle, int completedWorks, int completedBreaks);
-        void DisplayCycleComplete(int currentCycle, int completedWorks, int completedBreaks, string phase);
+        void DisplayCycleTracking(int currentCycle, CompletedStats stats);
+        void DisplayCycleComplete(int currentCycle, CompletedStats stats, string phase);
         void DisplayGrassMessage();
         void DisplayAllCyclesComplete();
-        void DisplayCompletedStats(int completedWorks, int completedBreaks);
+        void DisplayCompletedStats(CompletedStats stats);
         void DisplayFinishedMessage();
         void DisplayError(string message);
         bool ConfirmContinue();

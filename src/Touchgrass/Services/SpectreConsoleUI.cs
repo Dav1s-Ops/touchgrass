@@ -25,14 +25,14 @@ namespace Touchgrass.Services
             AnsiConsole.Write(panel);
         }
 
-        public void DisplayCycleTracking(int currentCycle, int completedWorks, int completedBreaks)
+        public void DisplayCycleTracking(int currentCycle, CompletedStats stats)
         {
-            AnsiConsole.MarkupLine($"[italic yellow]Cycle: [/]{currentCycle} | [italic yellow]Works: [/]{completedWorks} | [italic yellow]Breaks: [/]{completedBreaks}");
+            AnsiConsole.MarkupLine($"[italic yellow]Cycle: [/]{currentCycle} | [italic yellow]Works: [/]{stats.Works} | [italic yellow]Breaks: [/]{stats.Breaks}");
         }
 
-        public void DisplayCycleComplete(int currentCycle, int completedWorks, int completedBreaks, string phase)
+        public void DisplayCycleComplete(int currentCycle, CompletedStats stats, string phase)
         {
-            AnsiConsole.MarkupLine($"[italic yellow]Cycle: [/]{currentCycle} | [italic yellow]Works: [/]{completedWorks} | [italic yellow]Breaks: [/]{completedBreaks} | [italic purple]{phase} phase complete![/]");
+            AnsiConsole.MarkupLine($"[italic yellow]Cycle: [/]{currentCycle} | [italic yellow]Works: [/]{stats.Works} | [italic yellow]Breaks: [/]{stats.Breaks} | [italic purple]{phase} phase complete![/]");
         }
 
         public void DisplayGrassMessage()
@@ -45,9 +45,9 @@ namespace Touchgrass.Services
             AnsiConsole.MarkupLine("[bold green]All cycles complete![/]");
         }
 
-        public void DisplayCompletedStats(int completedWorks, int completedBreaks)
+        public void DisplayCompletedStats(CompletedStats stats)
         {
-            AnsiConsole.MarkupLine($"[italic yellow]Works: [/]{completedWorks} | [italic yellow]Breaks: [/]{completedBreaks}");
+            AnsiConsole.MarkupLine($"[italic yellow]Works: [/]{stats.Works} | [italic yellow]Breaks: [/]{stats.Breaks}");
         }
 
         public void DisplayFinishedMessage()
