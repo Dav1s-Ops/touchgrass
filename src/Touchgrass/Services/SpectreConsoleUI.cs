@@ -35,9 +35,17 @@ namespace Touchgrass.Services
             AnsiConsole.MarkupLine($"[italic yellow]Cycle: [/]{currentCycle} | [italic yellow]Works: [/]{stats.Works} | [italic yellow]Breaks: [/]{stats.Breaks} | [italic purple]{phase} phase complete![/]");
         }
 
-        public void DisplayGrassMessage()
+        public void DisplayPhaseSwitchMessage(PomodoroTimer timer)
         {
-            AnsiConsole.MarkupLine("[italic green]Go touch some grass.[/]");
+            var phase = timer.Phase;
+            if (phase.Equals("Work"))
+            {
+                AnsiConsole.MarkupLine("[italic green]Go touch some grass.[/]");
+            }
+            else
+            {
+                AnsiConsole.MarkupLine("[italic red]Well, the moment has passed. Back to work![/]");
+            }
         }
 
         public void DisplayAllCyclesComplete()

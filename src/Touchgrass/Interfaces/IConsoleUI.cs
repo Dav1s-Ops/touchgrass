@@ -8,7 +8,7 @@ namespace Touchgrass.Interfaces
         void DisplayConfig(IPomodoroConfig config);
         void DisplayCycleTracking(int currentCycle, CompletedStats stats);
         void DisplayCycleComplete(int currentCycle, CompletedStats stats, string phase);
-        void DisplayGrassMessage();
+        void DisplayPhaseSwitchMessage(PomodoroTimer timer);
         void DisplayAllCyclesComplete();
         void DisplayCompletedStats(CompletedStats stats);
         void DisplayFinishedMessage();

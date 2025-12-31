@@ -85,7 +85,7 @@ namespace Touchgrass
                 ui.DisplayCycleComplete(timer.CurrentCycle, stats, timer.Phase);
 
                 ui.ClearCurrentLine();
-                ui.DisplayGrassMessage();
+                ui.DisplayPhaseSwitchMessage(timer);
 
                 timer.SwitchPhase();
 
