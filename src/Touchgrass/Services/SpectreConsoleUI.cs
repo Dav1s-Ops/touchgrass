@@ -27,12 +27,12 @@ namespace Touchgrass.Services
 
         public void DisplayCycleTracking(int currentCycle, CompletedStats stats)
         {
-            AnsiConsole.MarkupLine($"[italic yellow]Cycle: [/]{currentCycle} | [italic yellow]Works: [/]{stats.Works} | [italic yellow]Breaks: [/]{stats.Breaks}");
+            AnsiConsole.MarkupLine($"[italic yellow]C: [/]{currentCycle} | [italic yellow]W: [/]{stats.Works} | [italic yellow]B: [/]{stats.Breaks}");
         }
 
         public void DisplayCycleComplete(int currentCycle, CompletedStats stats, string phase)
         {
-            AnsiConsole.MarkupLine($"[italic yellow]Cycle: [/]{currentCycle} | [italic yellow]Works: [/]{stats.Works} | [italic yellow]Breaks: [/]{stats.Breaks} | [italic purple]{phase} phase complete![/]");
+            AnsiConsole.MarkupLine($"[italic yellow]C: [/]{currentCycle} | [italic yellow]W: [/]{stats.Works} | [italic yellow]B: [/]{stats.Breaks} | [italic purple]{phase} phase complete![/]");
         }
 
         public void DisplayPhaseSwitchMessage(PomodoroTimer timer)
