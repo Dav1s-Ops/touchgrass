@@ -9,7 +9,8 @@ namespace Touchgrass
         static void Main(string[] args)
         {
             var parser = new CommandLineParser();
-            var ui = new SpectreConsoleUI();
+            var alarmPlayer = new AlarmPlayer();
+            var ui = new SpectreConsoleUI(alarmPlayer);
 
             ui.DisplayWelcome();
 
@@ -78,7 +79,7 @@ namespace Touchgrass
                             context.Refresh();
                         }
                     });
-
+                ui.StartAlarm();
                 stats.UpdateCompletedStats(timer);
 
                 ui.ClearOneLine();
@@ -90,6 +91,7 @@ namespace Touchgrass
                 timer.SwitchPhase();
 
                 bool continueNext = ui.ConfirmContinue();
+                ui.StopAlarm();
 
                 if (!continueNext) break;
 
