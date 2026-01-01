@@ -8,5 +8,7 @@ namespace Touchgrass.Interfaces
 {
     public interface IAlarmPlayer
     {
+        void Start();
+        void Stop();
     }
 }

@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+	<EmbeddedResource Include="Resources\*"/>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.22.1" />
     <PackageReference Include="NetCoreAudio" Version="1.7.0" />
     <PackageReference Include="Spectre.Console" Version="0.54.0" />
