@@ -6,6 +6,16 @@ namespace Touchgrass.Services
 {
     public class SpectreConsoleUI : IConsoleUI
     {
+        private readonly IAlarmPlayer _alarmPlayer;
+
+        public SpectreConsoleUI(IAlarmPlayer alarmPlayer)
+        {
+            _alarmPlayer = alarmPlayer;
+        }
+
+        public void StartAlarm() => _alarmPlayer.Start();
+        public void StopAlarm() => _alarmPlayer.Stop();
+
         public void DisplayWelcome()
         {
             AnsiConsole.MarkupLine("[bold green]Touchgrass Pomodoro Timer[/]");
