@@ -5,5 +5,6 @@
         int Cycles { get; }
         int WorkDurationSeconds { get; }
         int BreakDurationSeconds { get; }
+        string? AlarmSound { get; }
     }
 }
