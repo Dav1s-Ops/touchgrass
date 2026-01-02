@@ -33,8 +33,8 @@ namespace Touchgrass
         }
 
         private static void RunTimer(
-            PomodoroTimer timer, 
-            SpectreConsoleUI ui, 
+            PomodoroTimer timer,
+            SpectreConsoleUI ui,
             IPomodoroConfig config
         )
         {
