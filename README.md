@@ -1,4 +1,4 @@
-# Touchgrass 🍃
+# Touchgrass <img width="36" height="36" alt="touching-grass" src="https://github.com/user-attachments/assets/7f981440-83b6-49dd-8e3d-6e29c568edd4" />
 
 A simple CLI Pomodoro timer built in C# .NET. Boost productivity with work/break cycles. Runs on any OS/shell via .NET.
 
