@@ -6,11 +6,18 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+	<AssemblyName>touchgrass</AssemblyName>
+	<InvariantGlobalization>true</InvariantGlobalization>
+	<MinVerTagPrefix>v</MinVerTagPrefix>
   </PropertyGroup>
 
   <ItemGroup>
-	<EmbeddedResource Include="Resources\*"/>
+	<EmbeddedResource Include="Resources\*" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.22.1" />
+    <PackageReference Include="MinVer" Version="7.0.0">
+    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="NetCoreAudio" Version="1.7.0" />
     <PackageReference Include="Spectre.Console" Version="0.54.0" />
   </ItemGroup>
