@@ -1,6 +1,7 @@
 ﻿using Spectre.Console;
 using Touchgrass.Interfaces;
 using Touchgrass.Services;
+using System.Reflection;
 
 namespace Touchgrass
 {
@@ -8,6 +9,15 @@ namespace Touchgrass
     {
         static void Main(string[] args)
         {
+            if (args.Contains("--version") || args.Contains("-v"))
+            {
+                var infoAttr = Assembly.GetExecutingAssembly()
+                    .GetCustomAttribute<AssemblyInformationalVersionAttribute>();
+                var v = infoAttr?.InformationalVersion ?? "unknown";
+                Console.WriteLine($"touchgrass {v}");
+                return;
+            }
+            
             var parser = new CommandLineParser();
             var alarmPlayer = new AlarmPlayer();
             var ui = new SpectreConsoleUI(alarmPlayer);
