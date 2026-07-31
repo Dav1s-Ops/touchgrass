@@ -2,12 +2,6 @@
 
 A simple CLI Pomodoro timer built in C# .NET. Boost productivity with work/break cycles. Runs on any OS/shell via .NET.
 
-## Installation
-### *Note:* Adding versioning and package distribution. In the meantime, you'll need to have [**.NET 9.0** installed](https://dotnet.microsoft.com/en-us/download/dotnet/9.0).
-1. Clone repo: `git clone https://github.com/yourusername/touchgrass.git`
-2. Build: `dotnet build`
-3. Run: `dotnet run --project ./src/Touchgrass` (alias as `tgrass` for convenience)
-
 ## Usage
 
 **Default: 4 cycles, 25m work, 5m break**
