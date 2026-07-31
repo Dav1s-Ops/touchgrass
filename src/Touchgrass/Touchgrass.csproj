@@ -6,9 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-	<AssemblyName>touchgrass</AssemblyName>
-	<InvariantGlobalization>true</InvariantGlobalization>
 	<MinVerTagPrefix>v</MinVerTagPrefix>
+	<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
   </PropertyGroup>
 
   <ItemGroup>
