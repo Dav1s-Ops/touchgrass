@@ -1,0 +1,88 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build ${{ matrix.rid }}
+    runs-on: ubuntu-latest # .NET cross-compiles self-contained binaries for all RIDs
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { rid: linux-x64, archive: tar.gz }
+          - { rid: osx-x64,   archive: tar.gz }
+          - { rid: osx-arm64, archive: tar.gz }
+          - { rid: win-x64,   archive: zip }
+          - { rid: win-arm64, archive: zip }
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # MinVer needs full history + tags
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Publish
+        run: |
+          dotnet publish src/Touchgrass/Touchgrass.csproj \
+            -c Release \
+            -r ${{ matrix.rid }} \
+            --self-contained true \
+            -p:PublishSingleFile=true \
+            -p:IncludeNativeLibrariesForSelfExtract=true \
+            -p:EnableCompressionInSingleFile=true \
+            -p:DebugType=none \
+            -o dist/${{ matrix.rid }}
+
+      - name: Package archive
+        run: |
+          VERSION=${GITHUB_REF_NAME#v}
+          NAME=touchgrass-${VERSION}-${{ matrix.rid }}
+          cd dist/${{ matrix.rid }}
+          if [ "${{ matrix.archive }}" = "zip" ]; then
+            zip -r "../../${NAME}.zip" .
+          else
+            tar -czf "../../${NAME}.tar.gz" .
+          fi
+
+      - name: Stage raw Windows .exe (for winget)
+        if: startsWith(matrix.rid, 'win')
+        run: |
+          VERSION=${GITHUB_REF_NAME#v}
+          cp dist/${{ matrix.rid }}/touchgrass.exe "touchgrass-${VERSION}-${{ matrix.rid }}.exe"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.rid }}
+          path: |
+            touchgrass-*.tar.gz
+            touchgrass-*.zip
+            touchgrass-*.exe
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: Generate checksums
+        run: |
+          cd artifacts
+          sha256sum * > SHA256SUMS.txt
+          cat SHA256SUMS.txt
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/*
+          generate_release_notes: true
